@@ -24,7 +24,9 @@ class Button extends Component {
 	render() {
 		return (
 			<TouchableOpacity style={this.style} onPress={this.pressHandler} disabled={this.props.disabled}>
-				<Text style={{ fontSize: this.style.fontSize, color: this.style.color, fontWeight: this.style.fontWeight }}>{this.props.children}</Text>
+				<Text style={{ fontSize: this.style.fontSize, color: this.style.color, fontWeight: this.style.fontWeight, textAlign: this.style.textAlign }}>
+					{this.props.children}
+				</Text>
 			</TouchableOpacity>
 		)
 	}
