@@ -30,6 +30,11 @@ class LocationList extends Component {
 
 		this.savePosition = this.savePosition.bind(this)
 		this.deleteLocations = this.deleteLocations.bind(this)
+		this.openMap = this.openMap.bind(this)
+	}
+
+	openMap() {
+		this.props.navigation.navigate('map', { markers: this.state.locations })
 	}
 
 	async savePosition() {
@@ -101,7 +106,7 @@ class LocationList extends Component {
 						</Button>
 					</View>
 					<View style={styles.posButtons}>
-						<Button style={{ ...styles.smallButton, fontWeight: 'bold' }} disabled={!this.state.locationsLoaded}>
+						<Button onTouch={this.openMap} style={{ ...styles.smallButton, fontWeight: 'bold' }} disabled={!this.state.locationsLoaded}>
 							Open Map
 						</Button>
 						<Button style={styles.smallButton} disabled={!this.state.locationsLoaded}>
