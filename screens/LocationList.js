@@ -30,7 +30,7 @@ class LocationList extends Component {
 		super(props)
 		this.state = { locations: [], loading: false, locationsLoaded: false }
 
-		this.savePosition = this.savePosition.bind(this)
+		this.saveLocation = this.saveLocation.bind(this)
 		this.deleteLocations = this.deleteLocations.bind(this)
 		this.openMap = this.openMap.bind(this)
 		this.switchHandler = this.switchHandler.bind(this)
@@ -52,7 +52,7 @@ class LocationList extends Component {
 		this.props.navigation.navigate('map', { markers: this.state.locations.filter(loc => loc.selected) })
 	}
 
-	async savePosition() {
+	async saveLocation() {
 		this.setState({ loading: true })
 		let { status } = await Permissions.askAsync(Permissions.LOCATION)
 		if (status !== 'granted') {
@@ -77,11 +77,23 @@ class LocationList extends Component {
 	}
 
 	deleteLocations() {
-		this.setState({ loading: true }, async () => {
-			let keys = await AsyncStorage.getAllKeys()
-			await AsyncStorage.multiRemove(keys)
-			this.setState({ locations: [], loading: false })
-		})
+		Alert.alert('Delete all locations', 'This operation will delete all saved locations.\nProceed?', [
+			{
+				text: 'Cancel',
+				onPress: () => {},
+				style: 'cancel',
+			},
+			{
+				text: 'OK',
+				onPress: () => {
+					this.setState({ loading: true }, async () => {
+						let keys = await AsyncStorage.getAllKeys()
+						await AsyncStorage.multiRemove(keys)
+						this.setState({ locations: [], loading: false })
+					})
+				},
+			},
+		])
 	}
 
 	switchHandler(key, value) {
@@ -125,11 +137,11 @@ class LocationList extends Component {
 						</Button>
 					</View>
 					<View style={styles.posButtons2}>
-						<Button onTouch={this.savePosition} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
-							Save current position
+						<Button onTouch={this.saveLocation} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
+							Save current location
 						</Button>
 						<Button onTouch={this.deleteLocations} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
-							Delete all saved positions
+							Delete all saved locations
 						</Button>
 						<View style={styles.smallButton}>
 							<Text style={[styles.smallButton, { width: '100%' }]}>Select all locations</Text>
