@@ -4,11 +4,12 @@ import * as Permissions from 'expo-permissions'
 import * as Location from 'expo-location'
 import Button from '../components/Button'
 import LocationElement from '../components/LocationElement'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const styles = StyleSheet.create({
-	wrapper: { flex: 1 },
+	wrapper: { flex: 1, paddingTop: 10 },
 	bigButton: { fontSize: 24, width: '50%', textAlign: 'center', fontWeight: 'bold' },
-	smallButton: { fontSize: 20, width: '30%', textAlign: 'center' },
+	smallButton: { fontSize: 20, width: '30%', textAlign: 'center', display: 'flex' },
 	buttonsWrapper: { width: '100%' },
 	posButtons: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 20 },
 	posButtons2: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' },
@@ -124,7 +125,8 @@ class LocationList extends Component {
 		if (this.state.loading) {
 			return (
 				<View style={[styles.wrapper, { justifyContent: 'center', alignItems: 'center' }]}>
-					<ActivityIndicator size="large" color="#000000" />
+					<Text style={{ textAlign: 'center', fontSize: 40 }}>Saving current location</Text>
+					<ActivityIndicator size="large" color="#000000" style={{ paddingBottom: 40, marginTop: 20 }} />
 				</View>
 			)
 		}
@@ -144,10 +146,16 @@ class LocationList extends Component {
 							Delete all saved locations
 						</Button>
 						<View style={styles.smallButton}>
-							<Text style={[styles.smallButton, { width: '100%' }]}>Select all locations</Text>
-							<View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
-								<Switch value={this.state.locations.every(loc => loc.selected)} onChange={this.selectAll} disabled={!this.state.locationsLoaded} />
-							</View>
+							<TouchableOpacity onPress={this.selectAll}>
+								<Text style={[styles.smallButton, { width: '100%' }]}>Select all locations</Text>
+								<View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+									<Switch
+										value={this.state.locations.length > 0 && this.state.locations.every(loc => loc.selected)}
+										onChange={this.selectAll}
+										disabled={!this.state.locationsLoaded}
+									/>
+								</View>
+							</TouchableOpacity>
 						</View>
 					</View>
 				</View>
