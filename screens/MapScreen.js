@@ -6,7 +6,7 @@ class MapScreen extends Component {
 	static navigationOptions = {
 		title: 'map',
 		headerStyle: {
-			backgroundColor: 'cyan',
+			backgroundColor: '#2B79C2',
 		},
 		headerTitleStyle: {
 			color: '#000000',

@@ -5,7 +5,7 @@ import * as Font from 'expo-font'
 
 const styles = StyleSheet.create({
 	wrapper: { flex: 1 },
-	header: { flex: 1, backgroundColor: 'cyan', alignItems: 'center', justifyContent: 'center' },
+	header: { flex: 1, backgroundColor: '#2B79C2', alignItems: 'center', justifyContent: 'center' },
 	headerText: { fontSize: 48, color: 'black', textAlign: 'center' },
 	buttonWrapper: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 	button: { fontSize: 24, fontWeight: 'bold' },

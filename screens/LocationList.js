@@ -17,7 +17,7 @@ class LocationList extends Component {
 	static navigationOptions = {
 		title: 'locations',
 		headerStyle: {
-			backgroundColor: 'cyan',
+			backgroundColor: '#2B79C2',
 		},
 		headerTitleStyle: {
 			color: '#000000',
@@ -31,10 +31,23 @@ class LocationList extends Component {
 		this.savePosition = this.savePosition.bind(this)
 		this.deleteLocations = this.deleteLocations.bind(this)
 		this.openMap = this.openMap.bind(this)
+		this.switchHandler = this.switchHandler.bind(this)
+		this.selectAll = this.selectAll.bind(this)
+	}
+
+	selectAll() {
+		if (this.state.locations.length < 1) return
+		let temp = Object.assign([], this.state.locations)
+		let deselect = this.state.locations.every(loc => loc.selected)
+		temp.map(loc => {
+			loc.selected = !deselect
+			return loc
+		})
+		this.setState({ locations: temp })
 	}
 
 	openMap() {
-		this.props.navigation.navigate('map', { markers: this.state.locations })
+		this.props.navigation.navigate('map', { markers: this.state.locations.filter(loc => loc.selected) })
 	}
 
 	async savePosition() {
@@ -69,6 +82,14 @@ class LocationList extends Component {
 		})
 	}
 
+	switchHandler(key, value) {
+		console.log(key, value)
+		let temp = Object.assign([], this.state.locations)
+		let i = temp.findIndex(loc => loc.key == key)
+		temp[i].selected = value
+		this.setState({ locations: temp })
+	}
+
 	loadLocations() {
 		return new Promise(async res => {
 			let keys = await AsyncStorage.getAllKeys()
@@ -76,10 +97,8 @@ class LocationList extends Component {
 			let data = stores.map((result, i, store) => {
 				let key = store[i][0]
 				let value = JSON.parse(store[i][1])
-				return { key: key, value: value }
+				return { key: key, value: value, selected: false }
 			})
-			console.log('data')
-			console.log(data)
 			this.setState({ locations: data, locationsLoaded: true }, () => {
 				res('done')
 			})
@@ -87,6 +106,7 @@ class LocationList extends Component {
 	}
 
 	render() {
+		console.log(this.state.locations)
 		if (this.state.loading) {
 			return (
 				<View style={[styles.wrapper, { justifyContent: 'center', alignItems: 'center' }]}>
@@ -98,19 +118,19 @@ class LocationList extends Component {
 			<View style={styles.wrapper}>
 				<View style={styles.buttonsWrapper}>
 					<View style={styles.posButtons}>
+						<Button onTouch={this.openMap} style={{ ...styles.smallButton, fontWeight: 'bold' }} disabled={!this.state.locationsLoaded}>
+							Open Map
+						</Button>
+					</View>
+					<View style={styles.posButtons2}>
 						<Button onTouch={this.savePosition} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
 							Save current position
 						</Button>
 						<Button onTouch={this.deleteLocations} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
 							Delete all saved positions
 						</Button>
-					</View>
-					<View style={styles.posButtons}>
-						<Button onTouch={this.openMap} style={{ ...styles.smallButton, fontWeight: 'bold' }} disabled={!this.state.locationsLoaded}>
-							Open Map
-						</Button>
-						<Button style={styles.smallButton} disabled={!this.state.locationsLoaded}>
-							Select all
+						<Button onTouch={this.selectAll} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
+							{this.state.locations.every(loc => loc.selected) ? 'Select none' : 'Select all'}
 						</Button>
 					</View>
 				</View>
@@ -119,9 +139,7 @@ class LocationList extends Component {
 						style={styles.list}
 						data={this.state.locations}
 						keyExtractor={item => item.key}
-						renderItem={({ item, index }) => <LocationElement locationData={item} />}
-						/* onRefresh={this.refresh}
-						refreshing={this.state.refreshing} */
+						renderItem={({ item, index }) => <LocationElement locationData={item} callback={this.switchHandler} />}
 					/>
 				) : (
 					<ActivityIndicator size="large" color="#000000" />
