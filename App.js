@@ -4,9 +4,9 @@ import LocationList from './screens/LocationList'
 import MapScreen from './screens/MapScreen'
 
 const Root = createStackNavigator({
+	main: { screen: MainScreen },
 	locations: { screen: LocationList },
 	map: { screen: MapScreen },
-	main: { screen: MainScreen },
 })
 
 const App = createAppContainer(Root)

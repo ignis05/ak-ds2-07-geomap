@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, ActivityIndicator, AsyncStorage, FlatList } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, AsyncStorage, FlatList, Switch, Alert } from 'react-native'
 import * as Permissions from 'expo-permissions'
 import * as Location from 'expo-location'
 import Button from '../components/Button'
@@ -7,9 +7,11 @@ import LocationElement from '../components/LocationElement'
 
 const styles = StyleSheet.create({
 	wrapper: { flex: 1 },
-	smallButton: { fontSize: 24, width: '40%', textAlign: 'center' },
+	bigButton: { fontSize: 24, width: '50%', textAlign: 'center', fontWeight: 'bold' },
+	smallButton: { fontSize: 20, width: '30%', textAlign: 'center' },
 	buttonsWrapper: { width: '100%' },
-	posButtons: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' },
+	posButtons: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly', marginBottom: 20 },
+	posButtons2: { width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' },
 	buttonsWrapper: { marginBottom: 20 },
 })
 
@@ -118,7 +120,7 @@ class LocationList extends Component {
 			<View style={styles.wrapper}>
 				<View style={styles.buttonsWrapper}>
 					<View style={styles.posButtons}>
-						<Button onTouch={this.openMap} style={{ ...styles.smallButton, fontWeight: 'bold' }} disabled={!this.state.locationsLoaded}>
+						<Button onTouch={this.openMap} style={styles.bigButton} disabled={!this.state.locationsLoaded}>
 							Open Map
 						</Button>
 					</View>
@@ -129,9 +131,12 @@ class LocationList extends Component {
 						<Button onTouch={this.deleteLocations} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
 							Delete all saved positions
 						</Button>
-						<Button onTouch={this.selectAll} style={styles.smallButton} disabled={!this.state.locationsLoaded}>
-							{this.state.locations.every(loc => loc.selected) ? 'Select none' : 'Select all'}
-						</Button>
+						<View style={styles.smallButton}>
+							<Text style={[styles.smallButton, { width: '100%' }]}>Select all locations</Text>
+							<View style={{ width: '100%', alignItems: 'center', justifyContent: 'center' }}>
+								<Switch value={this.state.locations.every(loc => loc.selected)} onChange={this.selectAll} disabled={!this.state.locationsLoaded} />
+							</View>
+						</View>
 					</View>
 				</View>
 				{this.state.locationsLoaded ? (
